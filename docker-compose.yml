@@ -1,0 +1,44 @@
+services:
+  app:
+    build:
+      context: .
+      args:
+        UID: ${UID}
+        GID: ${GID}
+    user: "${UID}:${GID}" 
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_NAME=mydb
+      - DB_USER=user
+      - DB_PASSWORD=password
+      - DB_HOST=db
+      - DB_PORT=3306
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:11.4
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - mariadb_data:/var/lib/mysql/
+    environment:
+      - MARIADB_ROOT_PASSWORD=root_password
+      - MARIADB_DATABASE=mydb
+      - MARIADB_USER=user
+      - MARIADB_PASSWORD=password
+    restart: unless-stopped
+
+  adminer:
+    image: adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    restart: unless-stopped
+
+volumes:
+  mariadb_data:
