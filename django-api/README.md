@@ -1,14 +1,16 @@
 # Setup
-## パーミッション設定の為、ホストとコンテナのユーザを一致させる
+## 環境変数の設定
+下記はホストユーザの確認
 ```
-echo "UID=$(id -u)" > .env
-echo "GID=$(id -g)" >> .env
+id -u   # 現在のユーザー UID を表示
+id -g   # 現在のユーザー GID を表示
 ```
 
 ## DBのマイグレーションと初期データ投入
 ```
-python manage.py migrate
-python manage.py init_data
+docker-compose exec app alembic revision --autogenerate -m "initial table"  # マイグレーションファイルが存在しない場合
+docker-compose exec app alembic upgrade head
+docker-compose exec app python manage.py init_data
 ```
 
 
