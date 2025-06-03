@@ -2,5 +2,14 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('transaction/<int:transaction_id>/', views.retrieve_transactions, name='retrieve_transactions'),
+    path(
+        "transactions/",
+        views.TransactionListCreateView.as_view(),
+        name="transactions_list_create"
+    ),
+    path(
+        "transactions/<int:transaction_id>/",
+        views.TransactionDetailView.as_view(),
+        name="transaction_detail"
+    ),
 ]
