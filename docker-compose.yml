@@ -14,7 +14,8 @@ services:
     env_file:
       - .env
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   db:
     image: mariadb:11.4
@@ -24,13 +25,19 @@ services:
     env_file:
       - .env
     restart: unless-stopped
+    healthcheck:
+      test: "mariadb -h localhost -u root -p${MARIADB_ROOT_PASSWORD} -e 'SELECT 1'"
+      interval: 2s
+      timeout: 2s
+      retries: 10
 
   adminer:
     image: adminer
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     restart: unless-stopped
 
 volumes:
