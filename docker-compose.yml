@@ -11,12 +11,8 @@ services:
       - .:/app
     ports:
       - "8000:8000"
-    environment:
-      - DB_NAME=mydb
-      - DB_USER=user
-      - DB_PASSWORD=password
-      - DB_HOST=db
-      - DB_PORT=3306
+    env_file:
+      - .env
     depends_on:
       - db
 
@@ -25,11 +21,8 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     volumes:
       - mariadb_data:/var/lib/mysql/
-    environment:
-      - MARIADB_ROOT_PASSWORD=root_password
-      - MARIADB_DATABASE=mydb
-      - MARIADB_USER=user
-      - MARIADB_PASSWORD=password
+    env_file:
+      - .env
     restart: unless-stopped
 
   adminer:
