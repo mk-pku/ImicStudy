@@ -13,7 +13,9 @@ class TransactionListCreateView(View):
     def get(self, request):
         session = get_session()
         try:
-            return None
+            transactions = (session.query(TransactionSQL).all())
+            data = [txn.to_dict() for txn in transactions]
+            return JsonResponse(data, safe=False)
         finally:
             session.close()
 
