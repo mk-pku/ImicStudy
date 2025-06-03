@@ -1,4 +1,5 @@
 django
 SQLAlchemy
-pandas
 mysqlclient
+alembic
+pandas
