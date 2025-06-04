@@ -1,7 +1,9 @@
-from django.http import JsonResponse, Http404
+import json
+from django.http import JsonResponse, Http404, HttpResponseBadRequest
 from django.views import View
-from .sqlalchemy import get_session
-from .sqlalchemy import TransactionSQL
+from pydantic import ValidationError
+from .schemas import TransactionCreateSchema
+from .sqlalchemy import get_session, TransactionSQL, CategorySQL
 
 
 class TransactionListCreateView(View):
@@ -20,9 +22,34 @@ class TransactionListCreateView(View):
             session.close()
 
     def post(self, request):
-        session = get_session()
         try:
-            return None
+            payload = json.loads(request.body)
+        except json.JSONDecodeError:
+            return HttpResponseBadRequest("JSONフォーマットが不正です")
+        
+        try:
+            validated = TransactionCreateSchema.parse_obj(payload)
+        except ValidationError as e:
+            return HttpResponseBadRequest(e.json())
+
+        session = get_session()
+
+        try:
+            if session.get(CategorySQL, validated.category_id) is None:
+                return HttpResponseBadRequest("指定されたカテゴリが存在しません")
+            
+            new_txn = TransactionSQL(
+                date = validated.date,
+                category_id = validated.category_id,
+                memo = validated.memo,
+                income = validated.income,
+                expenditure = validated.expenditure
+            )
+            session.add(new_txn)
+            session.commit()
+            session.refresh(new_txn)
+
+            return JsonResponse(new_txn.to_dict(), status=201)
         finally:
             session.close()
 
