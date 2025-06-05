@@ -9,6 +9,7 @@ from sqlalchemy import (
 	func,
 )
 from sqlalchemy.orm import sessionmaker, declarative_base, relationship, scoped_session
+from sqlalchemy.pool import StaticPool
 from django.conf import settings
 from datetime import date
 
@@ -20,16 +21,27 @@ def get_engine():
 	global _engine, _SessionLocal
 	if _engine is None:
 		db = settings.DATABASES["default"]
-		DATABASE_URL = (
-			f"mysql+mysqldb://{db['USER']}:{db['PASSWORD']}"
-			f"@{db['HOST']}:{db['PORT']}/{db['NAME']}?charset=utf8mb4"
-		)
-		_engine = create_engine(
-			DATABASE_URL,
-			pool_recycle=3600,
-			pool_pre_ping=True,
-			echo=True,
-		)
+		engine_name = db.get("ENGINE", "")
+
+		if "sqlite3" in engine_name:
+			DATABASE_URL = "sqlite:///:memory:"
+			_engine = create_engine(
+				DATABASE_URL,
+				connect_args={"check_same_thread": False},
+				poolclass=StaticPool,
+				echo=True,
+			)
+		else:
+			DATABASE_URL = (
+				f"mysql+mysqldb://{db['USER']}:{db['PASSWORD']}"
+				f"@{db['HOST']}:{db['PORT']}/{db['NAME']}?charset=utf8mb4"
+			)
+			_engine = create_engine(
+				DATABASE_URL,
+				pool_recycle=3600,
+				pool_pre_ping=True,
+				echo=True,
+			)
 		_SessionLocal = scoped_session(
 			sessionmaker(autocommit=False, autoflush=False, bind=_engine)
 		)
