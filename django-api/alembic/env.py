@@ -3,7 +3,7 @@ import os
 import django
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ImicStudy.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'django-api.settings')
 django.setup()
 
 from logging.config import fileConfig
