@@ -1,7 +1,7 @@
 from django.http import JsonResponse, HttpResponse
 from django.views import View
 from .utils import parse_json, validate_schema, check_category_exists, get_txn
-from .schemas import TransactionCreateSchema
+from .schemas import TransactionCreateSchema, TransactionUpdateSchema
 from .sqlalchemy import get_session, TransactionSQL, CategorySQL
 
 
@@ -15,11 +15,6 @@ class SessionMixin:
 
 
 class TransactionListCreateView(SessionMixin, View):
-	"""
-	GET: 取引一覧を取得する
-	POST: 新規取引を作成する
-	"""
-
 	def get(self, request):
 		transactions = (self.session.query(TransactionSQL).all())
 		data = [txn.to_dict() for txn in transactions]
@@ -50,13 +45,7 @@ class TransactionListCreateView(SessionMixin, View):
 		return JsonResponse(new_txn.to_dict(), status=201)
 
 
-class TransactionDetailView(View):
-	"""
-	GET: 指定IDの取引を取得する
-	PUT/PATCH: 指定IDの取引を更新する
-	DELETE: 指定IDの取引を削除する
-	"""
-
+class TransactionDetailView(SessionMixin, View):
 	def get(self, request, transaction_id):
 		txn = get_txn(self.session, TransactionSQL, transaction_id)
 		return JsonResponse(txn.to_dict())
@@ -88,7 +77,7 @@ class TransactionDetailView(View):
 		payload, err = parse_json(request)
 		if err: return err
 		
-		validated, err = validate_schema(payload, TransactionCreateSchema)
+		validated, err = validate_schema(payload, TransactionUpdateSchema)
 		if err: return err
 
 		txn = get_txn(self.session, TransactionSQL, transaction_id)
