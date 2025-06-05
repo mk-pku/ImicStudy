@@ -2,4 +2,5 @@ django
 SQLAlchemy
 mysqlclient
 alembic
+pydantic
 pandas
