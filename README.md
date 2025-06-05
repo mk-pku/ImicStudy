@@ -13,4 +13,7 @@ docker-compose exec app alembic upgrade head
 docker-compose exec app python manage.py init_data
 ```
 
-
+# テスト
+```
+docker-compose exec app python manage.py test kakeibo.tests.views
+```

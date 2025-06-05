@@ -1,5 +1,5 @@
 {
-    "name": "ImicStudy",
+    "name": "django-api",
     "dockerComposeFile": [
         "../docker-compose.yml"
     ],
