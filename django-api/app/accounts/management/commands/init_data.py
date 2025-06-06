@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from sqlalchemy import text
-from kakeibo.sqlalchemy import get_session, CategorySQL, TransactionSQL
+from accounts.sqlalchemy import get_session, CategorySQL, TransactionSQL
 from datetime import date
 
 

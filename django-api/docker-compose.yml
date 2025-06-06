@@ -1,14 +1,15 @@
 services:
   app:
     build:
-      context: .
+      context: ./app
       args:
         UID: ${UID}
         GID: ${GID}
     user: "${UID}:${GID}" 
+    working_dir: /app
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/app
+      - ./app:/app
     ports:
       - "8000:8000"
     env_file:
