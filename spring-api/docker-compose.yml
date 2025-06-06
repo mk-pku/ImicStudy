@@ -1,0 +1,50 @@
+services:
+  app:
+    build:
+      context: ./app
+      args:
+        UID: ${UID}
+        GID: ${GID}
+    user: "${UID}:${GID}" 
+    working_dir: /app
+    command: >
+      sh -c "chmod +x ./gradlew && \
+        ./gradlew compileJava --continuous & \
+        ./gradlew bootRun"
+    volumes:
+      - ./app:/app
+      - gradle_cache:/home/appuser/.gradle
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mariadb:11.4
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - mariadb_data:/var/lib/mysql/
+    env_file:
+      - .env
+    restart: unless-stopped
+    healthcheck:
+      test: "mariadb -h localhost -u root -p${MARIADB_ROOT_PASSWORD} -e 'SELECT 1'"
+      interval: 2s
+      timeout: 2s
+      retries: 10
+
+  adminer:
+    image: adminer
+    ports:
+      - "8081:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  mariadb_data:
+  gradle_cache:

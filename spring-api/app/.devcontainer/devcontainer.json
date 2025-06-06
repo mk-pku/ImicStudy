@@ -1,0 +1,15 @@
+{
+    "name": "spring-api",
+    "dockerComposeFile": [
+        "../../docker-compose.yml"
+    ],
+    "service": "app",
+    "workspaceFolder": "/app",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "vscjava.vscode-java-pack"
+            ]
+        }
+    }
+}
