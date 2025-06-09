@@ -5,6 +5,7 @@
     ],
     "service": "app",
     "workspaceFolder": "/app",
+    "overrideCommand": false,
     "customizations": {
         "vscode": {
             "extensions": [
