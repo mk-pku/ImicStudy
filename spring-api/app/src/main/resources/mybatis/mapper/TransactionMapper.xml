@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.api.mapper.TransactionMapper">
+	<!-- 全件取得 -->
+	<select id="findAll" resultType="Transaction">
+		SELECT
+			id,
+			date,
+			category_id,
+			memo,
+			income,
+			expenditure,
+			created_at,
+			updated_at
+		FROM 家計簿
+		ORDER BY date DESC, id DESC
+	</select>
+
+	<!-- ID で取得 -->
+	<select id="findById" parameterType="int" resultType="Transaction">
+		SELECT
+			id,
+			date,
+			category_id,
+			memo,
+			income,
+			expenditure,
+			created_at,
+			updated_at
+		FROM 家計簿
+		WHERE id = #{id}
+	</select>
+
+	<!-- 新規登録 -->
+	<insert id="insert" parameterType="Transaction" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO 家計簿
+			(date, category_id, memo, income, expenditure)
+		VALUES
+			(#{date}, #{categoryId}, #{memo}, #{income}, #{expenditure})
+	</insert>
+
+	<!-- 全項目更新 -->
+	<update id="update" parameterType="Transaction">
+		UPDATE 家計簿
+		SET
+			date = #{date},
+			category_id = #{categoryId},
+			memo = #{memo},
+			income = #{income},
+			expenditure = #{expenditure}
+		WHERE
+			id = #{id}
+	</update>
+
+	<!-- 部分更新 -->
+	<update id="patch">
+		UPDATE 家計簿
+		<set>
+			<if test="date != null">date = #{date},</if>
+			<if test="categoryId != null">category_id = #{categoryId},</if>
+			<if test="memo != null">memo = #{memo},</if>
+			<if test="income != null">income = #{income},</if>
+			<if test="expenditure != null">expenditure = #{expenditure},</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+	<!-- 削除 -->
+	<delete id="deleteById" parameterType="int">
+		DELETE FROM 家計簿 WHERE id = #{id}
+	</delete>
+
+</mapper>
