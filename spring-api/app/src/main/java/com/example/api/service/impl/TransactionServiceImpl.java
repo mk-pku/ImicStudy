@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.api.dto.TransactionCreateDto;
+import com.example.api.dto.TransactionPatchDto;
 import com.example.api.dto.TransactionUpdateDto;
 import com.example.api.dto.TransactionResponseDto;
 import com.example.api.exception.ResourceNotFoundException;
@@ -74,7 +75,7 @@ public class TransactionServiceImpl implements TransactionService {
 	}
 
 	@Override
-	public TransactionResponseDto patch(Integer id, TransactionUpdateDto dto) {
+	public TransactionResponseDto patch(Integer id, TransactionPatchDto dto) {
 		// 存在チェック
 		Transaction existing = transactionMapper.findById(id);
 		if (existing == null) {

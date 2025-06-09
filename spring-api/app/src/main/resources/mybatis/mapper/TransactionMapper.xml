@@ -18,7 +18,7 @@
 	</select>
 
 	<!-- ID で取得 -->
-	<select id="findById" parameterType="int" resultType="Transaction">
+	<select id="findById" resultType="Transaction">
 		SELECT
 			id,
 			date,

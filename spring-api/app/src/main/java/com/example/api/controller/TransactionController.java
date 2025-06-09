@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.api.dto.TransactionCreateDto;
+import com.example.api.dto.TransactionPatchDto;
 import com.example.api.dto.TransactionUpdateDto;
 import com.example.api.dto.TransactionResponseDto;
 import com.example.api.service.TransactionService;
@@ -74,9 +75,9 @@ public class TransactionController {
 	@PatchMapping("/{id}")
 	public ResponseEntity<TransactionResponseDto> patch(
 			@PathVariable Integer id,
-			@RequestBody TransactionUpdateDto updateDto) {
+			@Valid @RequestBody TransactionPatchDto patchDto) {
 
-		TransactionResponseDto patched = transactionService.patch(id, updateDto);
+		TransactionResponseDto patched = transactionService.patch(id, patchDto);
 		return ResponseEntity.ok(patched);
 	}
 
